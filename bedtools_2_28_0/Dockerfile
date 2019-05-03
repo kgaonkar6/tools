@@ -24,8 +24,10 @@ RUN apt-get update && apt-get install -y \
 
 WORKDIR /opt
 RUN wget https://github.com/arq5x/bedtools2/releases/download/v2.28.0/bedtools-2.28.0.tar.gz
-RUN tar -zxvf bedtools-2.28.0.tar.gz
-RUN cd bedtools2
-RUN make 
+    && tar -zxvf bedtools-2.28.0.tar.gz
 WORKDIR /opt/bedtools2
+
+RUN make 
+
+WORKDIR /opt/bedtools2/bin
 
