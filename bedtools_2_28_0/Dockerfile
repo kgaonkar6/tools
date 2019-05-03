@@ -20,11 +20,10 @@ RUN apt-get update && apt-get install -y \
 	wget \
 	unzip \
 	tabix \
+	libbz2-dev \
 	libncurses5-dev
 
 WORKDIR /opt
-RUN apk add --update --no-cache libstdc++ bash python \
-    && apk add --update --no-cache --virtual=deps g++ make zlib-dev 
 RUN wget https://github.com/arq5x/bedtools2/releases/download/v2.28.0/bedtools-2.28.0.tar.gz \
     && tar -zxvf bedtools-2.28.0.tar.gz
 WORKDIR /opt/bedtools2
