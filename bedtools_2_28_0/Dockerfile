@@ -23,7 +23,7 @@ RUN apt-get update && apt-get install -y \
 	libncurses5-dev
 
 WORKDIR /opt
-RUN wget https://github.com/arq5x/bedtools2/releases/download/v2.28.0/bedtools-2.28.0.tar.gz
+RUN wget https://github.com/arq5x/bedtools2/releases/download/v2.28.0/bedtools-2.28.0.tar.gz \
     && tar -zxvf bedtools-2.28.0.tar.gz
 WORKDIR /opt/bedtools2
 
