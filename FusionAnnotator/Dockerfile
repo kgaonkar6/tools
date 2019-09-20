@@ -8,8 +8,14 @@ RUN apt-get update && apt-get install -y \
 	build-essential \
 	tar \
 	git \
-	zlib-dev
-
+	libreadline-gplv2-dev \
+	libncursesw5-dev \
+	libssl-dev \
+	libsqlite3-dev \
+	tk-dev \
+	libgdbm-dev \
+	libc6-dev \
+	libbz2-dev
 
 WORKDIR opt
 # Install FusionAnnotator
