@@ -25,6 +25,6 @@ WORKDIR opt
 
 RUN git clone https://github.com/FusionAnnotator/FusionAnnotator.git && \
     cd FusionAnnotator && \
-    git checkout 9cd889a && \
+    git checkout 9cd889a 
 
 ENV FUSION_ANNOTATOR ${SRC}/FusionAnnotator
