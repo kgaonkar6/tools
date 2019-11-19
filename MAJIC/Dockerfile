@@ -23,8 +23,9 @@ RUN apt-get update && apt-get install -y \
 	libxml2-dev \
 	libxslt1-dev \
 	zlib1g-dev \
-	python-pip \
-	python3-venv
+	python-pip 
+
+RUN sudo apt-get python3.4-venv
 
 # change working directory
 WORKDIR opt
