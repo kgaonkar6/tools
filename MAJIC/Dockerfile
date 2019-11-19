@@ -56,4 +56,4 @@ RUN pip install h5py==2.8.0
 RUN pip install gunicorn==19.9.0
 RUN pip install Flask-WTF==0.14.2
 
-pip install git+https://bitbucket.org/biociphers/majiq_stable.git#egg=majiq
+RUN pip install git+https://bitbucket.org/biociphers/majiq_stable.git#egg=majiq
