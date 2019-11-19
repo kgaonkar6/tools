@@ -25,7 +25,8 @@ RUN apt-get update && apt-get install -y \
 	zlib1g-dev \
 	python-pip 
 
-RUN sudo apt-get python3.4-venv
+# venv is provided with python3 
+#RUN sudo apt-get python3.4-venv
 
 # change working directory
 WORKDIR opt
