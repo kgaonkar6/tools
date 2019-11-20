@@ -31,7 +31,7 @@ RUN apt-get update && apt-get install -y \
 	python-pip 
 
 # venv is provided with python3 
-RUN sudo apt-get python3-venv
+# RUN sudo apt-get python3-venv
 
 # change working directory
 WORKDIR opt
@@ -48,8 +48,8 @@ RUN export HTSLIB_LIBRARY_DIR=/opt/htslib-1.9/lib
 RUN export HTSLIB_INCLUDE_DIR=/opt/htslib-1.9/include
 
 # install majic
-RUN python3 -m venv env
-RUN source env/bin/activate
+# RUN python3 -m venv env
+# RUN source env/bin/activate
 RUN pip install pip -U
 RUN pip install wheel setuptools -U
 RUN pip install cython numpy GitPython -U
