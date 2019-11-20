@@ -23,6 +23,11 @@ RUN apt-get update && apt-get install -y \
 	libxml2-dev \
 	libxslt1-dev \
 	zlib1g-dev \
+	libgsl0-dev \
+	libcurl4-openssl-dev \
+	liblzma-dev \
+	libncurses5-dev \
+	libperl-dev \
 	python-pip 
 
 # venv is provided with python3 
@@ -36,11 +41,11 @@ RUN tar -xvf htslib-1.9.tar.bz2
 
 # move to htslib-1.9
 WORKDIR htslib-1.9 
-RUN ./configure && make && make prefix=/home/ubuntu/htslib-1.9 install
+RUN ./configure && make && make prefix=/opt/htslib-1.9 install
 
 # set environment variables
-RUN export HTSLIB_LIBRARY_DIR=/home/ubuntu/opt/htslib-1.9/lib 
-RUN export HTSLIB_INCLUDE_DIR=/home/ubuntu/opt/htslib-1.9/include
+RUN export HTSLIB_LIBRARY_DIR=/opt/htslib-1.9/lib 
+RUN export HTSLIB_INCLUDE_DIR=/opt/htslib-1.9/include
 
 # install majic
 RUN python3 -m venv env
