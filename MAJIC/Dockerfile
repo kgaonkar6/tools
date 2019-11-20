@@ -33,10 +33,7 @@ WORKDIR opt
 # download and install htslib
 RUN wget "https://github.com/samtools/htslib/releases/download/1.9/htslib-1.9.tar.bz2"
 RUN tar -xvf htslib-1.9.tar.bz2   
-RUN cd htslib-1.9
-RUN ./configure
-RUN make
-RUN make prefix=/home/ubuntu/htslib-1.9 install
+RUN cd htslib-1.9 && ./configure && make && make prefix=/home/ubuntu/htslib-1.9 install
 
 # set environment variables
 RUN export HTSLIB_LIBRARY_DIR=/home/ubuntu/opt/htslib-1.9/lib 
