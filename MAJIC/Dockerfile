@@ -31,7 +31,7 @@ RUN apt-get update && apt-get install -y \
 	python-pip 
 
 # venv is provided with python3 
-#RUN sudo apt-get python3-venv
+RUN sudo apt-get python3-venv
 
 # change working directory
 WORKDIR opt
