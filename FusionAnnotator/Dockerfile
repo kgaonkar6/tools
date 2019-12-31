@@ -27,4 +27,36 @@ RUN git clone https://github.com/FusionAnnotator/FusionAnnotator.git && \
     cd FusionAnnotator && \
     git checkout 9cd889a 
 
-ENV FUSION_ANNOTATOR ${SRC}/FusionAnnotator
+RUN cd FusionAnnotator/PerlLib
+RUN wget "https://cpan.metacpan.org/authors/id/M/ML/MLEHMANN/common-sense-3.74.tar.gz"
+RUN wget "https://cpan.metacpan.org/authors/id/M/ML/MLEHMANN/Types-Serialiser-1.0.tar.gz"
+RUN wget "https://cpan.metacpan.org/authors/id/M/ML/MLEHMANN/Canary-Stability-2013.tar.gz"
+RUN wget "https://cpan.metacpan.org/authors/id/M/ML/MLEHMANN/JSON-XS-4.02.tar.gz"
+
+RUN tar -zxvf Canary-Stability-2013.tar.gz && \
+    cd Canary-Stability-2013 && \
+    perl Makefile.PL && \
+    make && \
+    make install 
+ 
+RUN tar -zxvf common-sense-3.74.tar.gz && \
+    cd common-sense-3.74 && \
+    perl Makefile.PL && \
+    make && \
+    make install 
+
+RUN tar -zxvf Types-Serialiser-1.0.tar.gz && \
+    cd Types-Serialiser-1.0 && \
+    perl Makefile.PL && \
+    make && \
+    make install 
+
+RUN tar -zxvf JSON-XS-4.02.tar.gz && \
+    cd JSON-XS-4.02 && \
+    perl Makefile.PL && \
+    make && \
+    make install 
+ 
+WORKDIR /opt/FusionAnnotator/
+ENV FUSION_ANNOTATOR /opt/FusionAnnotator/FusionAnnotator
+
