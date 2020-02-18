@@ -1,0 +1,25 @@
+FROM rocker/tidyverse:3.5.1
+MAINTAINER gaonkark@chop.email.edu
+WORKDIR /rocker-build/
+
+RUN apt-get update && apt-get install -y --no-install-recommends apt-utils
+
+RUN apt-get install dialog apt-utils -y
+
+RUN R -e "install.packages('optparse', dependencies = TRUE)"
+
+RUN R -e "BiocManager::install(c('EnsDb.Hsapiens.v86', 'ensembldb'))"
+
+WORKDIR /opt/formatFusionCalls
+
+RUN wget "https://github.com/d3b-center/annoFuse/archive/master.zip"
+
+RUN R -e "BiocManager::install(c('qdapRegex', 'ggpubr', 'ggthemes'))"
+
+RUN unzip master.zip
+
+RUN R CMD build annoFuse-master
+
+#add scripts
+ADD formatFusionCalls.R /rocker-build/formatFusionCalls.R
+ADD annoFusePerSample.R /rocker-build/annoFusePerSample.R
