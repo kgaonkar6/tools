@@ -55,19 +55,13 @@ ENV HTSLIB_INCLUDE_DIR=/opt/htslib-1.9/include
 
 # install majic
 RUN python3 --version
-# RUN python3 -m pip install --user virtualenv
-# RUN python3 -m venv env
-# RUN source env/bin/activate
-# RUN python3 -m pip install pip -U
+RUN python3 -m pip install werkzeug==0.16.0
 RUN python3 -m pip install wheel setuptools -U
 RUN python3 -m pip install cython numpy GitPython -U
 RUN python3 -m pip install Flask==1.0.2
 RUN python3 -m pip install waitress==1.1.0
-RUN python3 -m pip install scipy>=1.1.0
 RUN python3 -m pip install scipy==1.1.0
-RUN python3 -m pip install psutil>=5.4.8
 RUN python3 -m pip install psutil==5.4.8
-RUN python3 -m pip install h5py>=2.8.0
 RUN python3 -m pip install h5py==2.8.0
 RUN python3 -m pip install gunicorn==19.9.0
 RUN python3 -m pip install Flask-WTF==0.14.2
