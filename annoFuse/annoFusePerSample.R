@@ -11,15 +11,22 @@ option_list <- list(
               help="Formatted fusion calls from arriba"),
   make_option(c("-s", "--fusionfileStarFusion"),type="character",
               help="Formatted fusion calls from starfusion"),
+  make_option(c("-e", "--expressionFile"),type="character",
+              help="RSEM file for sample"),
+  make_option(c("-t", "--tumorID"),type="character",
+              help="Sample name to rename column in RSEM FPKM column"),
   make_option(c("-o","--outputfile"),type="character",
-              help="Formatted fusion calls from [STARfusion | Arriba] (.TSV)")
+              help="Formatted and filtered fusion calls from [STARfusion | Arriba] (.TSV)")
 )
 
 #read in caller results
 opt <- parse_args(OptionParser(option_list=option_list))
 Arribainputfile <- opt$fusionfileArriba
 STARFusioninputfile <- opt$fusionfileStarFusion
+expressionFile<-opt$expressionFile
+tumor_id<-opt$tumorID
 outputfile <- opt$outputfile
+
 
 # read files
 STARFusioninputfile<-read_tsv(STARFusioninputfile)
@@ -42,5 +49,31 @@ standardFusioncalls<-rbind(standardizedSTARFusion,standardizedArriba) %>% as.dat
 # General fusion QC for read support and red flags
 fusionQCFiltered<-fusion_filtering_QC(standardFusioncalls=standardFusioncalls,readingFrameFilter="in-frame|frameshift|other",artifactFilter="GTEx_Recurrent|DGD_PARALOGS|Normal|BodyMap|ConjoinG",junctionReadCountFilter=1,spanningFragCountFilter=10,readthroughFilter=FALSE)
 
+expressionMatrix<-read_tsv(expressionFile)
+
+# split gene id and symbol
+expressionMatrix <- expressionMatrix %>% 
+  dplyr::mutate(gene_id = str_replace(gene_id, "_PAR_Y_", "_")) 
+
+
+expressionMatrix <- cbind(expressionMatrix, colsplit(expressionMatrix$gene_id, pattern = '_', names = c("EnsembleID","GeneSymbol")))
+
+
+# collapse to matrix of HUGO symbols x Sample identifiers
+# take mean per row and use the max value for duplicated gene symbols
+expressionMatrix.collapsed <-expressionMatrix  %>% 
+  dplyr::mutate(means = rowMeans(dplyr::select(.,-EnsembleID, -GeneSymbol,-"transcript_id(s)",-gene_id))) %>% # take rowMeans
+  arrange(desc(means)) %>% # arrange decreasing by means
+  distinct(GeneSymbol, .keep_all = TRUE) %>% # keep the ones with greatest mean value. If ties occur, keep the first occurencce
+  dplyr::select(-means) %>%
+  unique() %>%
+  remove_rownames()  %>%
+  dplyr::select(EnsembleID,GeneSymbol,FPKM,gene_id)
+
+# rename columns
+colnames(expressionMatrix.collapsed)[3]<-tumor_id
+
+expressionFiltered<-expressionFilterFusion(standardFusioncalls = fusionQCFiltered,expressionFilter = 1,expressionMatrix = expressionMatrix.collapsed)
+
 # write to outputfile
-write.table(fusionQCFiltered,outputfile,sep="\t",quote=FALSE,row.names = FALSE)
+write.table(expressionFiltered,outputfile,sep="\t",quote=FALSE,row.names = FALSE)
