@@ -27,10 +27,17 @@ expressionFile<-opt$expressionFile
 tumor_id<-opt$tumorID
 outputfile <- opt$outputfile
 
-
 # read files
 STARFusioninputfile<-read_tsv(STARFusioninputfile)
 Arribainputfile<-read_tsv(Arribainputfile)
+
+# if StarFusion and Arriba files empty execution stops
+if(is_empty(STARFusioninputfile) & is_empty(Arribainputfile)){
+stop("StarFusion and Arriba files empty")
+  }
+
+# if StarFusion and Arriba files are not empty
+if(!is_empty(STARFusioninputfile) & !is_empty(Arribainputfile)){
 colnames(Arribainputfile)[27]<-"annots"
 
 # To have a general column with unique IDs associated with each sample
@@ -45,6 +52,41 @@ standardizedArriba<-fusion_standardization(fusion_calls = Arribainputfile,caller
 
 #merge standardized fusion calls
 standardFusioncalls<-rbind(standardizedSTARFusion,standardizedArriba) %>% as.data.frame()
+}
+
+# if StarFusion file is empty only run standardization for Arriba calls
+if(is_empty(STARFusioninputfile) & !is_empty(Arribainputfile)){
+  warning(paste("No fusion calls in StarFusion : ",opt$fusionfileStarFusion))
+  
+  colnames(Arribainputfile)[27]<-"annots"
+  # To have a general column with unique IDs associated with each sample
+  Arribainputfile$Sample <- Arribainputfile$tumor_id
+  Arribainputfile$Caller <- "Arriba"
+  
+  # standardized fusion calls
+  standardizedArriba<-fusion_standardization(fusion_calls = Arribainputfile,caller = "ARRIBA")
+  
+  #merge standardized fusion calls
+  standardFusioncalls<-standardizedArriba %>% as.data.frame()
+}
+
+# if Arriba file is empty only run standardization for StarFusion calls
+if(!is_empty(STARFusioninputfile) & is_empty(Arribainputfile)){
+  warning(paste("No fusion calls in StarFusion : ",opt$fusionfileStarFusion))
+  
+  # To have a general column with unique IDs associated with each sample
+  STARFusioninputfile$Sample <- STARFusioninputfile$tumor_id
+  STARFusioninputfile$Caller <- "StarFusion"
+  
+  # standardized fusion calls
+  standardizedSTARFusion<-fusion_standardization(fusion_calls = STARFusioninputfile,caller = "STARFUSION")
+  
+  #merge standardized fusion calls
+  standardFusioncalls<-standardizedSTARFusion %>% as.data.frame()
+}
+
+
+
 
 # General fusion QC for read support and red flags
 fusionQCFiltered<-fusion_filtering_QC(standardFusioncalls=standardFusioncalls,readingFrameFilter="in-frame|frameshift|other",artifactFilter="GTEx_Recurrent|DGD_PARALOGS|Normal|BodyMap|ConjoinG",junctionReadCountFilter=1,spanningFragCountFilter=10,readthroughFilter=FALSE)
@@ -60,12 +102,10 @@ expressionMatrix <- cbind(expressionMatrix, colsplit(expressionMatrix$gene_id, p
 
 
 # collapse to matrix of HUGO symbols x Sample identifiers
-# take mean per row and use the max value for duplicated gene symbols
+# take max expression per row and use the max value for duplicated gene symbols
 expressionMatrix.collapsed <-expressionMatrix  %>% 
-  dplyr::mutate(means = rowMeans(dplyr::select(.,-EnsembleID, -GeneSymbol,-"transcript_id(s)",-gene_id))) %>% # take rowMeans
-  arrange(desc(means)) %>% # arrange decreasing by means
-  distinct(GeneSymbol, .keep_all = TRUE) %>% # keep the ones with greatest mean value. If ties occur, keep the first occurencce
-  dplyr::select(-means) %>%
+  arrange(desc(FPKM)) %>% # arrange decreasing by FPKM
+  distinct(GeneSymbol, .keep_all = TRUE) %>% # keep the ones with greatest FPKM value. If ties occur, keep the first occurencce
   unique() %>%
   remove_rownames()  %>%
   dplyr::select(EnsembleID,GeneSymbol,FPKM,gene_id)
