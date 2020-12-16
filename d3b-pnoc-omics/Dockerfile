@@ -10,7 +10,7 @@ RUN apt-get install dialog apt-utils -y
 # install for general use
 RUN R -e "install.packages('BiocManager',repos = 'http://cran.us.r-project.org')"
 RUN R -e "install.packages('optparse', dependencies = TRUE,repos = 'http://cran.us.r-project.org')"
-RUN R -e "BiocManager::install(c('tidyverse','reshape2','rlist'))"
+RUN R -e "BiocManager::install(c('tidyverse','reshape2','rlist','rprojroot'))"
 
 RUN apt-get install gcc
 
@@ -18,7 +18,7 @@ RUN pip install pyranges pyreadr
 
 # install for mutational signature
 
-RUN R -e "BiocManager::install(c('GenomicFeatures', 'BSgenome.Hsapiens.UCSC.hg19', 'TxDb.Hsapiens.UCSC.hg19.knownGene', 'VariantAnnotation'))"
+RUN R -e "BiocManager::install(c('deconstructSigs','GenomicFeatures', 'BSgenome.Hsapiens.UCSC.hg19', 'TxDb.Hsapiens.UCSC.hg19.knownGene', 'VariantAnnotation'))"
 
 RUN R -e "BiocManager::install(c('decompTumor2Sig', 'BSgenome.Hsapiens.UCSC.hg38','TxDb.Hsapiens.UCSC.hg38.knownGene'))"
 
