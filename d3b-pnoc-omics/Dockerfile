@@ -30,6 +30,8 @@ RUN R -e "install.packages('https://cran.r-project.org/src/contrib/Archive/forei
 RUN R -e "install.packages('FactoMineR', dependencies = TRUE,repos = 'http://cran.us.r-project.org')"
 RUN R -e "install.packages('remotes', dependencies = TRUE,repos = 'http://cran.us.r-project.org')"
 RUN R -e "remotes::install_github('tpepler/nonpar')"
+RUN R -e "install.packages('R.utils',dependencies = TRUE,repos = 'http://cran.us.r-project.org')"
+
 
 # for rna clustering
 RUN R -e "BiocManager::install(c('DESeq2'))"
