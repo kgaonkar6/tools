@@ -11,6 +11,7 @@ RUN apt-get install dialog apt-utils -y
 RUN R -e "install.packages('BiocManager',repos = 'http://cran.us.r-project.org')"
 RUN R -e "install.packages('optparse', dependencies = TRUE,repos = 'http://cran.us.r-project.org')"
 RUN R -e "BiocManager::install(c('tidyverse','reshape2','rlist','rprojroot'))"
+RUN R -e "install.packages('R.utils', dependencies = TRUE,repos = 'http://cran.us.r-project.org')"
 
 RUN apt-get install gcc
 
