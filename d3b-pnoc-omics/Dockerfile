@@ -44,3 +44,7 @@ RUN R -e "BiocManager::install(c('org.Hs.eg.db','ReactomePA'))"
 # for python notebooks
 RUN pip install papermill
 
+# for MultiAssayExperiment
+RUN Rscript -e 'BiocManager::install("MultiAssayExperiment")'
+
+
